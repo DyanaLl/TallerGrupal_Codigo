@@ -1,56 +1,89 @@
-void main() {
-    println("""
-        ===========================================
-        |   SISTEMA DE MATRÍCULA - PUCE TEC       |
-        |      Carrera de Desarrollo de Software  |
-        ===========================================
-        """);
+package org.example;
+import java.util.Scanner;
 
-    String usr = "";
-    String m1 = "Fundamentos de Programación";
-    double n1 = 0.0;
-    
-    usr = readln("Ingrese el nombre del estudiante: ");
-    String op = readln("¿Es estudiante de reingreso o arrastre? (S/N): ");
+public class Matricula {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-    String[] h_materias = null; 
+        System.out.println("""
+                ===========================================
+                |   SISTEMA DE MATRÍCULA - PUCE TEC       |
+                |      Carrera de Desarrollo de Software  |
+                ===========================================
+                """);
 
-    if (op.equalsIgnoreCase("S")) {
-        h_materias = new String[]{ m1 };
-        String inputNota = readln("Ingrese la nota final obtenida en '" + m1 + "' (0-10): ");
-        n1 = Double.parseDouble(inputNota);
-    } else {
-        println("-> Registrando como estudiante de Primer Semestre...");
-    }
+        String nombreEstudiante = "";
+        String fundamentosProgramacion = "Fundamentos de Programación";
+        double notaFinal = 0.0;
+        String[] historialMaterias = null;
 
-    println("\n--- MATERIA A SOLICITAR ---");
-    println("Materia destino: [ Estructuras de Datos ] (Requisito: Haber aprobado Fundamentos con >= 7.0)");
-    String reqCupo = readln("¿Desea solicitar el cupo para esta materia? (S/N): ");
+        System.out.println("Bienvenid@ al sistema de matriculación PUCETEC");
+        System.out.print("Ingrese el nombre y apellido del estudiante: ");
+        nombreEstudiante = sc.nextLine();
 
-    if (reqCupo.equalsIgnoreCase("S")) {
-        boolean p1 = false;
-
-        for (int i = 0; i < h_materias.length; i++) {
-            if (h_materias[i].equals(m1)) {
-                p1 = true;
-            }
+        while (nombreEstudiante.trim().split(" ").length != 2) {
+            System.out.print("Debe ingresar solo primer nombre y apellido del estudiante, ingrese nuevamente:");
+            nombreEstudiante = sc.nextLine();
         }
 
-        String resultadoMatricula = switch (String.valueOf(p1)) {
-            case "true" -> {
-                if (n1 >= 7.0) {
-                    yield "MATRÍCULA APROBADA: Cumple con el prerrequisito.";
-                } else {
-                    yield "MATRÍCULA RECHAZADA: Reprobó el prerrequisito con " + n1;
+
+        System.out.print("\n¿Es estudiante NUEVO o de REINGRESO? (N/R): ");
+        String tipoEstudiante = sc.nextLine();
+
+        while (!tipoEstudiante.equalsIgnoreCase("N") && !tipoEstudiante.equalsIgnoreCase("R")) {
+            System.out.print("Opción inválida, debe ingresar N o R:");
+            tipoEstudiante = sc.nextLine();
+        }
+        if (tipoEstudiante.equalsIgnoreCase("R")) {
+            historialMaterias = new String[]{fundamentosProgramacion};
+            System.out.println("Requisito para realizar matricula: Haber aprobado la materia seleccionada con una nota miníma de 7.0");
+            System.out.println("Materia que desea tomar:" + fundamentosProgramacion);
+            System.out.print("\n Ingrese la nota final obtenida en la materia de" + fundamentosProgramacion + "' (0-10): ");
+            String inputNota = sc.nextLine();
+
+            while (!inputNota.matches("\\d+(\\.\\d+)?")) {
+                System.out.println("No se aceptan letras ni comas para representar números decimales..");
+                System.out.print("Ingrese nuevamente la nota (0-10):");
+                inputNota = sc.nextLine();
+            }
+            notaFinal = Double.parseDouble(inputNota);
+
+        } else if (tipoEstudiante.equalsIgnoreCase("N")) {
+            System.out.println("-> Registrando como estudiante de Primer Semestre...");
+            System.out.println("Su proceso de matriculación se realizará en las instalaciones de la universidad.");
+            System.exit(0);
+        }
+
+        System.out.print("¿Desea solicitar el cupo para esta materia? (Si/No): ");
+        String solicitaCupo = sc.nextLine();
+
+        if (solicitaCupo.equalsIgnoreCase("Si")) {
+            boolean cumplePrerrequisito = false;
+
+            if (historialMaterias != null) {
+                for (int i = 0; i < historialMaterias.length; i++) {
+                    if (historialMaterias[i].equals(fundamentosProgramacion)) {
+                        cumplePrerrequisito = true;
+                    }
                 }
             }
-            case "false" -> "MATRÍCULA RECHAZADA: No cuenta con el prerrequisito en su historial.";
-            default -> "Error del sistema.";
-        };
+            String resultadoMatricula = switch (String.valueOf(cumplePrerrequisito)) {
+                case "true" -> {
+                    if (notaFinal >= 7.0) {
+                        yield "MATRÍCULA APROBADA: Felicidades, cumple con el prerrequisito.";
+                    } else {
+                        yield "MATRÍCULA RECHAZADA: Reprobó la materia con " + notaFinal;
+                    }
+                }
+                case "false" -> "MATRÍCULA RECHAZADA: No cuenta con el prerrequisito en su historial.";
+                default -> "Error del sistema.";
+            };
 
-        println("\n[RESULTADO]: " + resultadoMatricula);
+            System.out.print("\nResultado:" + resultadoMatricula);
 
-    } else {
-        println("\nProceso finalizado. No se solicitaron materias de segundo nivel.");
+        } else {
+            System.out.println("\nProceso finalizado. No se solicitaron materias de segundo nivel.");
+        }
+        sc.close();
     }
 }
