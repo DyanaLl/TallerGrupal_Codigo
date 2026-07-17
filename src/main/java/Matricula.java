@@ -69,10 +69,13 @@ public class Matricula {
             }
             String resultadoMatricula = switch (String.valueOf(cumplePrerrequisito)) {
                 case "true" -> {
-                    if (notaFinal >= 7.0) {
-                        yield "MATRÍCULA APROBADA: Felicidades, cumple con el prerrequisito.";
+                    if (notaFinal >= 10.0) {
+                        System.out.println("¡Felicidades! Ha sido seleccionado como Tutor de Programación del Puce TEC para este sementre.");
+                        yield "MATRÍCULA APROBADA: Cumple con el prerrequisito con excelencia.";
+                    } else if (notaFinal >= 7.0) {
+                        yield "MATRÍCULA APROBADA: Cumple con el prerrequisito.";
                     } else {
-                        yield "MATRÍCULA RECHAZADA: Reprobó la materia con " + notaFinal;
+                        yield "MATRÍCULA RECHAZADA: Reprobó el prerrequisito con " + notaFinal;
                     }
                 }
                 case "false" -> "MATRÍCULA RECHAZADA: No cuenta con el prerrequisito en su historial.";
